@@ -77,6 +77,8 @@ model Shirt {
     id          String      @id @default(cuid())
     description String
     price       Decimal
+    url         String      @unique
+    gender      String
     CartItems   CartItems[]
 }
 

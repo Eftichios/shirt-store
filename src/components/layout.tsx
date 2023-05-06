@@ -4,7 +4,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <>
             <NavbarTop />
-            <main>{children}</main>
+            <main className="h-full">{children}</main>
         </>
     )
 }

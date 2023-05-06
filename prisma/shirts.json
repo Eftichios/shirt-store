@@ -1,0 +1,98 @@
+[
+    {
+        "description": "Haiwaiian shirt",
+        "price": 25.00,
+        "url": "hthttps://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/01-hawaiian-shirt-men.jpgtps://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/01-hawaiian-shirt-men.jpg",
+        "gender": "men"
+    },
+    {
+        "description": "White t-shirt with cat design",
+        "price": 12.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/02-cat-white-tshirt-unisex.jpg",
+        "gender": "unisex"
+    },
+    {
+        "description": "Dark blue t-shirt",
+        "price": 14.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/03-dark-blue-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "Orange checked shirt",
+        "price": 25.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/04-orange-checked-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "White shirt long sleeve",
+        "price": 19.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/05-white-shirt-women.jpg", 
+        "gender": "women"
+    },
+    {
+        "description": "Light violet shirt",
+        "price": 31.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/06-light-violet-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "Cyan shirt",
+        "price": 22.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/07-cyan-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "White shirt",
+        "price": 10.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/08-white-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "White t-shirt with nature design",
+        "price": 34.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/09-white-nature-tshirt-women.jpg", 
+        "gender": "women"
+    },
+    {
+        "description": "Blue striped shirt",
+        "price": 30.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/10-blue-striped-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "Black t-shirt",
+        "price": 9.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/11-black-tshirt-unisex.jpg", 
+        "gender": "unisex"
+    },
+    {
+        "description": "White t-shirt",
+        "price": 10.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/12-white-tshirt-unisex.jpg", 
+        "gender": "unisex"
+    },
+    {
+        "description": "Grey checked shirt",
+        "price": 24.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/13-grey-checked-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "Black t-shirt with skeleton hand design",
+        "price": 10.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/14-black-skeleton-hand-tshirt-unisex.jpg", 
+        "gender": "unisex"
+    },
+    {
+        "description": "Light cyan shirt",
+        "price": 32.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/15-light-cyan-shirt-men.jpg", 
+        "gender": "men"
+    },
+    {
+        "description": "Black t-shirt motivational quote",
+        "price": 20.00,
+        "url": "https://toncode-general-public.s3.eu-west-2.amazonaws.com/shirt-store/16-black-motivational-tshirt-women.jpg", 
+        "gender": "women"
+    }
+]
