@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import LoadingPage from "~/components/loading-page";
 import ShirtCard from "~/components/shirt-card";
 import { api } from "~/utils/api";
 
@@ -12,7 +13,7 @@ export default function Checkout() {
     const { data: cartItems, isLoading: shirtsLoading } = api.cart.getAllCartItems.useQuery();
 
     if (numberOfItemsLoading || shirtsLoading) {
-        return <div>Loading...</div>
+        return <LoadingPage />
     }
 
     if (!session?.data?.user) {
@@ -24,10 +25,12 @@ export default function Checkout() {
     }
 
     return <>
-        <div className="mt-4">
-            {cartItems?.map((cartItem, index) =>
-                <ShirtCard key={index} shirt={cartItem.shirt} isCheckout={true} quantity={cartItem.quantity} />
-            )}
+        <div className="flex justify-center">
+            <div className="mt-4 w-[80%]">
+                {cartItems?.map((cartItem, index) =>
+                    <ShirtCard key={index} shirt={cartItem.shirt} isCheckout={true} quantity={cartItem.quantity} />
+                )}
+            </div>
         </div>
     </>
 

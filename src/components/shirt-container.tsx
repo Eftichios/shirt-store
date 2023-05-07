@@ -1,3 +1,4 @@
+import LoadingPage from "./loading-page";
 import ShirtCard from "./shirt-card";
 import { api } from "~/utils/api";
 
@@ -6,7 +7,7 @@ export default function ShirtContainer() {
     const { data: shirts, isLoading, isError } = api.shirt.getAll.useQuery();
 
     if (isLoading || !shirts) {
-        return <div>Loading...</div>
+        return <LoadingPage />
     }
 
     if (isError) {
