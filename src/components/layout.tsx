@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <NavbarTop />
-            <main className="h-full">{children}</main>
+            <main className="h-[calc(100%-48px)]">{children}</main>
         </>
     )
 }
