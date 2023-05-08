@@ -78,23 +78,41 @@ export const cartRouter = createTRPCRouter({
 
         }),
 
- 
+    updateShirtQuantity: protectedProcedure
+        .input(z.object({ shirtId: z.string(), quantity: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const user = ctx.session.user;
+            const cart = await ctx.prisma.cart.findFirstOrThrow({
+                where: { userId: user.id }
+            })
 
-    getAllCartItems: protectedProcedure.query(async ({ ctx }) => {
-        const user = ctx.session.user;
+            const result = await ctx.prisma.cartItems.update({
+                where: { cartId_shirtId: { cartId: cart.id, shirtId: input.shirtId }},
+                data: {
+                    quantity: input.quantity
+                }
+            })
 
-        const cart = await ctx.prisma.cart.findFirstOrThrow({
-            where: { userId: user.id }
+            return result.quantity;
+        }),
+
+
+
+            getAllCartItems: protectedProcedure.query(async ({ ctx }) => {
+                const user = ctx.session.user;
+
+                const cart = await ctx.prisma.cart.findFirstOrThrow({
+                    where: { userId: user.id }
+                })
+
+                const cartItems = await ctx.prisma.cartItems.findMany({
+                    where: { cartId: cart.id },
+                    include: {
+                        shirt: true
+                    }
+                });
+
+                return cartItems;
+
+            })
         })
-
-        const cartItems = await ctx.prisma.cartItems.findMany({
-            where: { cartId: cart.id },
-            include: {
-                shirt: true
-            }
-        });
-
-        return cartItems;
-
-    })
-})
