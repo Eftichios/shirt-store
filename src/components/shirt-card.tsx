@@ -11,17 +11,30 @@ export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shir
     const removeFromCartMutation = api.cart.removeFromCart.useMutation();
     const updateQuantityMutation = api.cart.updateShirtQuantity.useMutation();
 
+    const ctx = api.useContext();
+
     const handleAddToCart = () => {
-        addToCartMutation.mutate({ shirtId: shirt.id })
+        addToCartMutation.mutate({ shirtId: shirt.id },
+            {
+                onSuccess: () => {
+                    void ctx.cart.getNumberOfItemsInCart.invalidate();
+                }
+            })
     }
 
     const handleRemoveFromCart = () => {
-        removeFromCartMutation.mutate({ shirtId: shirt.id })
+        removeFromCartMutation.mutate({ shirtId: shirt.id },
+            {
+                onSuccess: () => {
+                    void ctx.cart.getNumberOfItemsInCart.invalidate();
+                    void ctx.cart.getAllCartItems.invalidate();
+                }
+            })
+
     }
 
     const handleUpdateQuantity = () => {
-
-        updateQuantityMutation.mutate({ shirtId: shirt.id, quantity: quantityState as number})
+        updateQuantityMutation.mutate({ shirtId: shirt.id, quantity: quantityState as number })
     }
 
     return <>
