@@ -87,7 +87,7 @@ export const cartRouter = createTRPCRouter({
             })
 
             const result = await ctx.prisma.cartItems.update({
-                where: { cartId_shirtId: { cartId: cart.id, shirtId: input.shirtId }},
+                where: { cartId_shirtId: { cartId: cart.id, shirtId: input.shirtId } },
                 data: {
                     quantity: input.quantity
                 }
@@ -98,21 +98,21 @@ export const cartRouter = createTRPCRouter({
 
 
 
-            getAllCartItems: protectedProcedure.query(async ({ ctx }) => {
-                const user = ctx.session.user;
+    getAllCartItems: protectedProcedure.query(async ({ ctx }) => {
+        const user = ctx.session.user;
 
-                const cart = await ctx.prisma.cart.findFirstOrThrow({
-                    where: { userId: user.id }
-                })
-
-                const cartItems = await ctx.prisma.cartItems.findMany({
-                    where: { cartId: cart.id },
-                    include: {
-                        shirt: true
-                    }
-                });
-
-                return cartItems;
-
-            })
+        const cart = await ctx.prisma.cart.findFirstOrThrow({
+            where: { userId: user.id }
         })
+
+        const cartItems = await ctx.prisma.cartItems.findMany({
+            where: { cartId: cart.id },
+            include: {
+                shirt: true
+            }
+        });
+
+        return cartItems;
+
+    })
+})
