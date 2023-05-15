@@ -78,6 +78,21 @@ export const cartRouter = createTRPCRouter({
 
         }),
 
+    removeAllFromCart: protectedProcedure
+        .mutation(async ({ ctx }) => {
+            const user = ctx.session.user;
+            const cart = await ctx.prisma.cart.findFirstOrThrow({
+                where: { userId: user.id }
+            })
+
+            const result = await ctx.prisma.cartItems.deleteMany({
+                where: { cartId: cart.id },
+            })
+
+            return result.count;
+        }),
+
+
     updateShirtQuantity: protectedProcedure
         .input(z.object({ shirtId: z.string(), quantity: z.number() }))
         .mutation(async ({ ctx, input }) => {
