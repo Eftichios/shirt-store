@@ -2,6 +2,7 @@ import Image from "next/image"
 import { useState } from "react";
 import { api, type RouterOutputs } from "~/utils/api"
 import { BsCart2 } from "react-icons/bs"
+import { LoaderIcon, toast } from "react-hot-toast";
 
 
 type shirtType = RouterOutputs["shirt"]["getAll"][number];
@@ -11,6 +12,7 @@ export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shir
     const addToCartMutation = api.cart.addToCart.useMutation();
     const removeFromCartMutation = api.cart.removeFromCart.useMutation();
     const updateQuantityMutation = api.cart.updateShirtQuantity.useMutation();
+    const { data: shirtInCart, isLoading: shirtInCartLoading } = api.shirt.isShirtInCart.useQuery({ shirtId: shirt.id });
 
     const ctx = api.useContext();
 
@@ -20,6 +22,7 @@ export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shir
                 onSuccess: () => {
                     void ctx.cart.getNumberOfItemsInCart.invalidate();
                     void ctx.shirt.isShirtInCart.invalidate();
+                    toast.success(`Added ${shirt.description} to cart`);
                 }
             })
     }
@@ -31,18 +34,20 @@ export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shir
                     void ctx.cart.getNumberOfItemsInCart.invalidate();
                     void ctx.cart.getAllCartItems.invalidate();
                     void ctx.shirt.isShirtInCart.invalidate();
+                    toast.success("Removed from cart");
                 }
             })
 
     }
 
     const handleUpdateQuantity = () => {
-        updateQuantityMutation.mutate({ shirtId: shirt.id, quantity: quantityState as number })
-    }
-
-    const checkIfInCart = () => {
-        const { data } = api.shirt.isShirtInCart.useQuery({ shirtId: shirt.id });
-        return data;
+        updateQuantityMutation.mutate({ shirtId: shirt.id, quantity: quantityState as number },
+            {
+                onSuccess: () => {
+                    toast.success(`Updated quantity to ${quantityState as number}`);
+                }
+            }
+        )
     }
 
     return <>
@@ -69,15 +74,18 @@ export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shir
                                 <p> Total: {quantityState && `£${quantityState * Number(shirt.price)}`} </p>
                             </div>
                             <div className="flex flex-row gap-1">
-                                <button onClick={handleUpdateQuantity} className="rounded-md px-2 py-1 bg-slate-400 hover:bg-slate-300">Update Quantity</button>
-                                <button onClick={handleRemoveFromCart} className="rounded-md px-2 py-1 bg-violet-400 hover:bg-violet-300">Remove from cart</button>
+                                <button onClick={handleUpdateQuantity} className="rounded-sm px-2 py-1 bg-slate-200 hover:bg-slate-100 shadow shadow-slate-300">Update Quantity</button>
+                                <button onClick={handleRemoveFromCart} className="rounded-sm px-2 py-1 bg-violet-400 hover:bg-violet-300 shadow shadow-violet-300">Remove from cart</button>
                             </div>
                         </div> :
                         <div className="flex gap-1 items-center">
-                            {checkIfInCart() ?
+                            {shirtInCartLoading && <LoaderIcon/>}
+
+                            {!shirtInCartLoading  && (shirtInCart ?
                                 <BsCart2 />
                                 :
-                                <button onClick={handleAddToCart} className="rounded-md px-2 py-1 bg-slate-400 hover:bg-slate-300">Add to cart</button>
+                                <button onClick={handleAddToCart} className="rounded-sm px-2 py-1 bg-violet-400 hover:bg-violet-300 shadow shadow-violet-300">Add to cart</button>
+                                )
                             }
                         </div>
                     }
