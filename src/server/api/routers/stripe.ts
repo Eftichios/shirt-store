@@ -38,12 +38,12 @@ export const stripeRouter = createTRPCRouter({
                     quantity: shirt.quantity
                 }))
 
-
+                const origin = env.NEXTAUTH_URL.includes('localhost') ? env.NEXTAUTH_URL : `https://${env.NEXTAUTH_URL}`;
                 const session = await stripe.checkout.sessions.create({
                     line_items: lineItems,
                     mode: 'payment',
-                    success_url: `${env.NEXTAUTH_URL}/?success=true`,
-                    cancel_url: `${env.NEXTAUTH_URL}/?canceled=true`,
+                    success_url: `${origin}/?success=true`,
+                    cancel_url: `${origin}/?canceled=true`,
                     automatic_tax: { enabled: true },
                 });
                 return { sessionId: session.id };

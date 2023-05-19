@@ -17,7 +17,7 @@ export default function ShirtCartContainer() {
     const stripeMutation = api.stripe.checkout.useMutation();
     const ctx = api.useContext();
     const router = useRouter();
-
+    
     const [showModal, setShowModal] = useState(false);
 
     if (shirtsLoading || !cartItems) {
@@ -64,7 +64,8 @@ export default function ShirtCartContainer() {
                 url: cartItem.shirt.url
             })
         }
-        const result = await stripeMutation.mutateAsync({ shirts: shirtItems })
+    
+        const result = await stripeMutation.mutateAsync({ shirts: shirtItems})
         if (result?.sessionId) {
             const stripe = await stripePromise;
 
