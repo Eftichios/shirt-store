@@ -1,7 +1,9 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { BsCart2 } from "react-icons/bs"
+import { FaTshirt } from "react-icons/fa"
 import { api } from "~/utils/api";
+import Image from "next/image";
 
 const AuthNavbar: React.FC = () => {
 
@@ -29,13 +31,24 @@ export default function NavbarTop() {
         { enabled: sessionData?.user !== undefined },
     );
 
+    console.log(sessionData);
+
     itemsInBasket = noItems as number;
     return <>
         <div className="px-8 h-12 bg-slate-900 text-white flex items-center justify-between">
-            <div className="flex"><Link href='/'>Shirtly</Link></div>
             <div>
-                {sessionData && sessionData.user?.name}
+                <Link href='/'>
+                    <div className="flex gap-2 items-center">
+                        <FaTshirt />
+                        <span>Shirt Store</span>
+                    </div>
+                </Link>
             </div>
+            {sessionData && <div className="flex gap-2">
+                <Image className="rounded-sm" src={sessionData.user.image as string} width={25} height={25} alt="User profile picture" />
+                <span>{sessionData.user?.name}</span>
+            </div>
+            }
             <div className="flex">
                 {sessionData &&
                     <div className="mr-4 flex items-center relative">

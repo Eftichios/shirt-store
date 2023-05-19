@@ -19,7 +19,9 @@ const config = {
         defaultLocale: "en",
     },
     images: {
-        domains: ['toncode-general-public.s3.eu-west-2.amazonaws.com']
+        domains: ['toncode-general-public.s3.eu-west-2.amazonaws.com',
+            'cdn.discordapp.com'
+        ]
     }
 };
 export default config;
