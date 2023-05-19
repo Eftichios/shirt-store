@@ -31,8 +31,6 @@ export default function NavbarTop() {
         { enabled: sessionData?.user !== undefined },
     );
 
-    console.log(sessionData);
-
     itemsInBasket = noItems as number;
     return <>
         <div className="px-8 h-12 bg-slate-900 text-white flex items-center justify-between">
