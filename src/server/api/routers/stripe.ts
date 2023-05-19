@@ -28,7 +28,7 @@ export const stripeRouter = createTRPCRouter({
                 const shirts = input.shirts;
                 const lineItems = shirts.map((shirt) => ({
                     price_data: {
-                        currency: 'usd',
+                        currency: 'gbp',
                         product_data: {
                             name: shirt.description,
                             images: [shirt.url]
