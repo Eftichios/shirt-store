@@ -74,12 +74,13 @@ model VerificationToken {
 
 // product related
 model Shirt {
-    id          String      @id @default(cuid())
+    id          String       @id @default(cuid())
     description String
     price       Decimal
-    url         String      @unique
+    url         String       @unique
     gender      String
     CartItems   CartItems[]
+    OrderItems  OrderItems[]
 }
 
 model Cart {
@@ -100,4 +101,25 @@ model CartItems {
 
     @@id([cartId, shirtId])
     @@index([cartId])
+}
+
+model Order {
+    id         String       @id @default(cuid())
+    amount     Decimal
+    currency   String
+    url        String       @db.VarChar(1024)
+    createdAt  BigInt
+    status     String
+    OrderItems OrderItems[]
+}
+
+model OrderItems {
+    orderId  String
+    shirtId  String
+    shirt    Shirt  @relation(fields: [shirtId], references: [id], onDelete: Cascade)
+    order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+    quantity Int
+
+    @@id([orderId, shirtId])
+    @@index([orderId])
 }
