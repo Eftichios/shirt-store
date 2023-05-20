@@ -57,6 +57,7 @@ export const stripeRouter = createTRPCRouter({
                     url: session.url as string,
                     createdAt: session.created,
                     status: 'PENDING',
+                    userId: ctx.session.user.id
                 }
 
                 //console.log(order);

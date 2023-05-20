@@ -61,7 +61,8 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
-    Cart          Cart[]
+    cart          Cart[]
+    order         Order[]
 }
 
 model VerificationToken {
@@ -79,15 +80,15 @@ model Shirt {
     price       Decimal
     url         String       @unique
     gender      String
-    CartItems   CartItems[]
-    OrderItems  OrderItems[]
+    cartItems   CartItems[]
+    orderItems  OrderItems[]
 }
 
 model Cart {
     id        String      @id @default(cuid())
     userId    String
     user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    CartItems CartItems[]
+    cartItems CartItems[]
 
     @@index([userId])
 }
@@ -110,7 +111,11 @@ model Order {
     url        String       @db.VarChar(1024)
     createdAt  BigInt
     status     String
-    OrderItems OrderItems[]
+    orderItems OrderItems[]
+    userId     String       @unique
+    user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model OrderItems {
