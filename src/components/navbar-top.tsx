@@ -44,7 +44,7 @@ export default function NavbarTop() {
             </div>
             {sessionData && <div className="flex gap-2">
                 <Image className="rounded-sm" src={sessionData.user.image as string} width={25} height={25} alt="User profile picture" />
-                <span>{sessionData.user?.name}</span>
+                <Link href={`/user/${sessionData.user.name as string}`}>{sessionData.user?.name}</Link>
             </div>
             }
             <div className="flex">
