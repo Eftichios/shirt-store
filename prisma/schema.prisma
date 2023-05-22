@@ -109,7 +109,7 @@ model Order {
     amount     Decimal
     currency   String
     url        String       @db.VarChar(1024)
-    createdAt  BigInt
+    createdAt  Int
     status     String
     orderItems OrderItems[]
     userId     String       @unique
