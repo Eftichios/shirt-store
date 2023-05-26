@@ -1,27 +1,79 @@
 import Image from "next/image"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api, type RouterOutputs } from "~/utils/api"
 import { BsCart2 } from "react-icons/bs"
-import { LoaderIcon, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 
 type shirtType = RouterOutputs["shirt"]["getAll"][number];
-export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shirtType, isCheckout: boolean, quantity?: number }) {
+type cartItemType = RouterOutputs["cart"]["getAllCartItems"][number]
+export default function ShirtCard({ shirtsInCart, shirt, isCheckout, quantity }: { shirtsInCart: cartItemType[], shirt: shirtType, isCheckout: boolean, quantity?: number }) {
 
     const [quantityState, setQuantityState] = useState(quantity);
-    const addToCartMutation = api.cart.addToCart.useMutation();
-    const removeFromCartMutation = api.cart.removeFromCart.useMutation();
-    const updateQuantityMutation = api.cart.updateShirtQuantity.useMutation();
-    const { data: shirtInCart, isLoading: shirtInCartLoading } = api.shirt.isShirtInCart.useQuery({ shirtId: shirt.id });
-
+    const [isShirtInCart, setIsShirtInCart] = useState(false);
     const ctx = api.useContext();
+
+    useEffect(function() {
+        if (!shirtsInCart || shirtsInCart.length == 0) {
+            setIsShirtInCart(false);
+        }
+
+        const isInCart = shirtsInCart.find((cartItem) => cartItem.shirtId === shirt.id);
+
+        setIsShirtInCart(Boolean(isInCart));
+
+    }, [shirtsInCart, shirt.id])
+
+
+    const addToCartMutation = api.cart.addToCart.useMutation({
+        async onMutate() {
+            await ctx.cart.getNumberOfItemsInCart.cancel();
+
+            const prevCartNumber = ctx.cart.getNumberOfItemsInCart.getData();
+
+            ctx.cart.getNumberOfItemsInCart.setData(undefined, (_old) => _old as number + 1);
+
+            return { prevCartNumber };
+        },
+        onError(_err, _prev, mutCtx) {
+            ctx.cart.getNumberOfItemsInCart.setData(undefined, mutCtx?.prevCartNumber);
+        },
+        onSettled() {
+            void ctx.cart.getNumberOfItemsInCart.invalidate();
+            setIsShirtInCart(true);
+        }
+    });
+
+    const removeFromCartMutation = api.cart.removeFromCart.useMutation({
+        async onMutate({ shirtId }) {
+            await ctx.cart.getNumberOfItemsInCart.cancel();
+            await ctx.cart.getAllCartItems.cancel();
+
+            const prevCartNumber = ctx.cart.getNumberOfItemsInCart.getData();
+            const prevCartData = ctx.cart.getAllCartItems.getData();
+
+            ctx.cart.getNumberOfItemsInCart.setData(undefined, (_old) => _old as number - 1);
+            ctx.cart.getAllCartItems.setData(undefined, (_old) => _old?.filter((item) => item.shirtId != shirtId));
+
+            return { prevCartNumber, prevCartData };
+        },
+        onError(_err, _prev, mutCtx) {
+            ctx.cart.getNumberOfItemsInCart.setData(undefined, mutCtx?.prevCartNumber);
+            ctx.cart.getAllCartItems.setData(undefined, mutCtx?.prevCartData);
+        },
+        onSettled() {
+            void ctx.cart.getNumberOfItemsInCart.invalidate();
+            void ctx.cart.getAllCartItems.invalidate();
+            setIsShirtInCart(false);
+        }
+    });
+
+    const updateQuantityMutation = api.cart.updateShirtQuantity.useMutation();
 
     const handleAddToCart = () => {
         addToCartMutation.mutate({ shirtId: shirt.id },
             {
                 onSuccess: () => {
-                    void ctx.cart.getNumberOfItemsInCart.invalidate();
-                    void ctx.shirt.isShirtInCart.invalidate();
                     toast.success(`Added ${shirt.description} to cart`);
                 }
             })
@@ -31,9 +83,6 @@ export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shir
         removeFromCartMutation.mutate({ shirtId: shirt.id },
             {
                 onSuccess: () => {
-                    void ctx.cart.getNumberOfItemsInCart.invalidate();
-                    void ctx.cart.getAllCartItems.invalidate();
-                    void ctx.shirt.isShirtInCart.invalidate();
                     toast.success("Removed from cart");
                 }
             })
@@ -79,13 +128,12 @@ export default function ShirtCard({ shirt, isCheckout, quantity }: { shirt: shir
                             </div>
                         </div> :
                         <div className="flex gap-1 items-center">
-                            {shirtInCartLoading && <LoaderIcon/>}
 
-                            {!shirtInCartLoading  && (shirtInCart ?
+                            {(isShirtInCart ?
                                 <BsCart2 />
                                 :
                                 <button onClick={handleAddToCart} className="rounded-sm px-2 py-1 bg-violet-400 hover:bg-violet-300 shadow shadow-violet-300">Add to cart</button>
-                                )
+                            )
                             }
                         </div>
                     }

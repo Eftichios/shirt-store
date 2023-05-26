@@ -12,10 +12,31 @@ const stripePromise = loadStripe(env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 type CartItem = RouterOutputs['cart']['getAllCartItems'][number]
 export default function ShirtCartContainer() {
 
-    const { data: cartItems, isLoading: shirtsLoading, isError } = api.cart.getAllCartItems.useQuery();
-    const removeAllFromCartMutation = api.cart.removeAllFromCart.useMutation();
-    const stripeMutation = api.stripe.checkout.useMutation();
     const ctx = api.useContext();
+    const { data: cartItems, isLoading: shirtsLoading, isError } = api.cart.getAllCartItems.useQuery();
+    const removeAllFromCartMutation = api.cart.removeAllFromCart.useMutation({
+            async onMutate() {
+                await ctx.cart.getAllCartItems.cancel();
+                await ctx.cart.getNumberOfItemsInCart.cancel();
+
+                const prevCartData = ctx.cart.getAllCartItems.getData();
+                const prevCartNumber = ctx.cart.getNumberOfItemsInCart.getData();
+
+                ctx.cart.getAllCartItems.setData(undefined, (_old)=>[]);
+                ctx.cart.getNumberOfItemsInCart.setData(undefined, (_old)=>0);
+
+                return { prevCartData, prevCartNumber };
+            }, 
+            onError(_err, _prev, mutCtx) {
+                ctx.cart.getAllCartItems.setData(undefined, mutCtx?.prevCartData);
+                ctx.cart.getNumberOfItemsInCart.setData(undefined, mutCtx?.prevCartNumber);
+            },
+            onSettled() {
+                void ctx.cart.getAllCartItems.invalidate();
+                void ctx.cart.getNumberOfItemsInCart.invalidate();
+            }
+        });
+    const stripeMutation = api.stripe.checkout.useMutation();
     const router = useRouter();
     
     const [showModal, setShowModal] = useState(false);
@@ -45,8 +66,6 @@ export default function ShirtCartContainer() {
         removeAllFromCartMutation.mutate(undefined,
             {
                 onSuccess: () => {
-                    void ctx.cart.getAllCartItems.invalidate();
-                    void ctx.cart.getNumberOfItemsInCart.invalidate();
                     void router.push('/');
                 }
             });
@@ -127,7 +146,7 @@ return <>
         </div>
         <div className="p-4 overflow-y-auto w-[80%] max-h-[70%] rounded-lg border-2 border-slate-400 shadow shadow-slate-300">
             {cartItems?.map((cartItem, index) =>
-                <ShirtCard key={index} shirt={cartItem.shirt} isCheckout={true} quantity={cartItem.quantity} />
+                <ShirtCard shirtsInCart={cartItems} key={index} shirt={cartItem.shirt} isCheckout={true} quantity={cartItem.quantity} />
             )}
         </div>
         <div className="w-[80%] text-right">
